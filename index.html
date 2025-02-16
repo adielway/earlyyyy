@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOML</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000000;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            flex-direction: column;
+        }
+        .container {
+            position: relative;
+            text-align: center;
+            background: rgb(255, 251, 41);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .image-container, .video-container {
+            position: relative;
+            display: inline-block;
+        }
+        img, video {
+            width: 350px;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .lyrics-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            transition: bottom 0.5s ease-in-out;
+        }
+        .lyrics {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .lyrics.active, img.active, video.active {
+            opacity: 1;
+        }
+        .video-container {
+            display: none;
+        }
+        
+        .video-mode .lyrics-container {
+            bottom: 20px !important;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="music" autoplay controls>
+        <source src="YOU.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="container">
+        <div class="image-container" id="imageContainer">
+            <img id="image" src="HEY.jpg" alt="Portrait">
+            <div class="lyrics-container" id="lyricsContainer">
+                <p id="lyrics" class="lyrics"></p>
+            </div>
+        </div>
+
+        <div class="video-container" id="videoContainer">
+            <video id="video">
+                <source src="WEH.mp4" type="video/mp4" muted>
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        const music = document.getElementById("music");
+        const lyricsText = document.getElementById("lyrics");
+        const imageElement = document.getElementById("image");
+        const videoContainer = document.getElementById("videoContainer");
+        const videoElement = document.getElementById("video");
+        const lyricsContainer = document.getElementById("lyricsContainer");
+        const imageContainer = document.getElementById("imageContainer");
+
+        const slideshowData = [
+            { time: 0, text: "Oh, oh, oh, oh", img: "HEY.jpg" },
+            { time: 5, text: "Oh, oh, oh, oh", img: "I.jpg" },
+            { time: 12, text: "Oh, oh, oh", img: "LOVE.jpg" },
+            { time: 17, text: "Oh, her eyes, her eyes, make the stars look like they're not shining", img: "NO.jpg" },
+            { time: 22, text: "Her hair, her hair, falls perfectly without her trying", img: "PLS.jpg" },
+            { time: 26, text: "And she's so beautiful, I tell her everyday", img: "YES.jpg" },
+            { time: 34, text: "Yeah, I know, I know, when I compliment her she won't believe me", img: "HEY.jpg" },
+            { time: 40, text: "And it's so, it's so sad to think that she don't see what I see", img: "I.jpg" },
+            { time: 44, text: "But every time she asks me, Do I look okay? I say", img: "LOVE.jpg" },
+            { time: 51, text: "When I see your face, there's not a thing that I would change", img: "NO.jpg" },
+            { time: 60, text: "'Cause you're amazing just the way you are", img: "PLS.jpg" },
+            { time: 69, text: "And when you smile, the whole world stops and stares for awhile", img: "YES.jpg" },
+            { time: 77, text: "'Cause girl you're amazing just the way you are, yeah"}
+        ];
+
+        let currentIndex = 0;
+        let videoStarted = false;
+
+        function updateSlideshow() {
+            let currentTime = music.currentTime;
+
+            if (currentIndex < slideshowData.length && currentTime >= slideshowData[currentIndex].time) {
+                lyricsText.innerHTML = slideshowData[currentIndex].text;
+                imageElement.src = slideshowData[currentIndex].img;
+                lyricsText.classList.add("active");
+                imageElement.classList.add("active");
+                currentIndex++;
+            }
+
+            if (currentTime >= 77 && !videoStarted) {
+                videoStarted = true;
+                imageContainer.style.display = "none";
+                videoContainer.style.display = "block";
+                videoElement.classList.add("active"); 
+                videoElement.play(); 
+                videoElement.playbackRate = 0.6; 
+                lyricsContainer.style.bottom = "20px";
+            }
+        }
+
+        music.addEventListener("timeupdate", updateSlideshow);
+
+        music.addEventListener("timeupdate", function () {
+            if (music.currentTime >= 88) { 
+                music.pause();
+                music.currentTime = 0; 
+                videoElement.pause();
+            }
+        });
+    </script>
+
+</body>
+</html>
